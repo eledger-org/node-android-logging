@@ -230,11 +230,23 @@ module.exports._getStackTrace = function() {
   return stack;
 };
 
+module.exports._stringify = function(arg) {
+  return circularJSON.stringify(arg, null, 2).replace(/\\n/g, '\n');
+};
+
 module.exports._convertToString = function(arg) {
-  if (typeof arg === "string") {
+  var INDENT_SIZE = 4;
+
+  if (arg === undefined) {
+    return "";
+  } else if (typeof arg === "boolean") {
+    return "" + arg;
+  } else if (typeof arg === "string") {
     return arg;
+  } else if (typeof arg === "number") {
+    return "" + arg;
   } else if (Array.isArray(arg)) {
-    return circularJSON(arg);
+    return getSelf()._stringify(arg, null, 2).prepend('\n').indent(INDENT_SIZE);
   } else if (arg != null && typeof arg === "object") {
     var c = Object.prototype.toString.call(arg);
 
@@ -243,13 +255,13 @@ module.exports._convertToString = function(arg) {
       arg = {"error": arg, "stack": arg.stack};
     }
 
-    return circularJSON.stringify(arg);
+    return getSelf()._stringify(arg, null, 2).prepend('\n').indent(INDENT_SIZE);
   } else {
-    err = new TypeError("Unsupported type: " + circularJSON({
+    err = new TypeError("Unsupported type: " + getSelf()._stringify({
       arg: arg,
       type: typeof arg,
       toString: Object.prototype.toString.call(arg)
-    }));
+    }), null, 2).prepend('\n').indent(INDENT_SIZE);
 
     throw err;
   }
@@ -267,7 +279,7 @@ module.exports._getIntLevel = function(level) {
     }
   }
 
-  return -1;
+  throw new Error("Invalid log level supplied: " + level);
 };
 
 String.prototype.padLeft = function(padValue, padLength) {
@@ -278,5 +290,13 @@ String.prototype.padLeft = function(padValue, padLength) {
 String.prototype.padRight = function(padValue, padLength) {
   return String(this + padValue.repeat(padLength))
     .slice(0, padLength * padValue.length);
+};
+
+String.prototype.prepend = function(prefix) {
+  return String(prefix + this);
+};
+
+String.prototype.indent = function(indentSize) {
+  return this.replace(/[\r\n]+/g, "\n" + " ".repeat(indentSize));
 };
 

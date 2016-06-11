@@ -13,6 +13,10 @@ function getLogObject() {
 }
 
 describe('Log', function() {
+  var msgOnlyRegex = /^.*[ ]/;
+  var logLevel = [ "Fatal", "Error", "Warn", "Info", "Debug", "Trace" ];
+  var Log = getLogObject();
+
   describe('peek()', function() {
     it('should return a log line after a Log statement', function() {
       var Log = getLogObject();
@@ -20,7 +24,7 @@ describe('Log', function() {
 
       Log.F(exp);
 
-      assert.equal(Log.peek().replace(/^.*[ ]/, ''), exp);
+      assert.equal(Log.peek().replace(msgOnlyRegex, ''), exp);
     });
 
     it('should return the same most recently logged value if called more than once', function() {
@@ -33,10 +37,218 @@ describe('Log', function() {
       assert.equal(Log.peek(), Log.peek());
     });
 
-    it('should return an empty string when the queue is empty.', function() {
+    it('should return an empty string when the queue is empty', function() {
       var Log = getLogObject();
 
       assert.equal(Log.peek(), "");
+    });
+  });
+
+  describe('emptyQueue()', function() {
+    it('should cause peek to return an empty string', function() {
+      var Log = getLogObject();
+      var msg1 = "msg1";
+      var msg2 = "msg2";
+
+      assert.equal(Log.peek(), "");
+
+      Log.F(msg1);
+      assert.equal(Log.peek().replace(msgOnlyRegex, ''), msg1);
+
+      Log.F(msg2);
+
+      Log.emptyQueue();
+      assert.equal(Log.peek(), "");
+    });
+  });
+
+  describe('pop()', function() {
+    it('should return and remove the first item in the queue', function() {
+      var Log = getLogObject();
+      var msg1 = "msg1";
+      var msg2 = "msg2";
+
+      Log.F(msg1);
+      Log.F(msg2);
+
+      assert.equal(Log.peek().replace(msgOnlyRegex, ''), msg1);
+      assert.equal(Log.peek(), Log.pop());
+
+      assert.equal(Log.peek().replace(msgOnlyRegex, ''), msg2);
+      assert.equal(Log.peek(), Log.pop());
+    });
+  });
+
+  var combinations = [];
+
+  logLevel.forEach(function(messageLevel) {
+    logLevel.forEach(function(configuredLevel) {
+      combinations.push({configuredLevel: configuredLevel, messageLevel: messageLevel});
+    });
+  });
+
+  combinations.forEach(function(combination) {
+    messageLogLevel = combination.messageLevel;
+    configuredLogLevel = combination.configuredLevel;
+
+    messageLogLevelNum = Log._getIntLevel(messageLogLevel);
+    configuredLogLevelNum = Log._getIntLevel(configuredLogLevel);
+
+    if (messageLogLevelNum <= configuredLogLevelNum) {
+      describe(messageLogLevel[0] + "() configured at level " + configuredLogLevel, function() {
+        it('should print the message since the configured level is equal or higher', function() {
+          combination.ran = Math.random();
+
+          Log = getLogObject();
+          Log.enableQueue(combination.configuredLevel);
+
+          if (combination.messageLevel === "Fatal")  Log.F(combination.ran);
+          if (combination.messageLevel === "Error")  Log.E(combination.ran);
+          if (combination.messageLevel === "Warn")   Log.W(combination.ran);
+          if (combination.messageLevel === "Info")   Log.I(combination.ran);
+          if (combination.messageLevel === "Debug")  Log.D(combination.ran);
+          if (combination.messageLevel === "Trace")  Log.T(combination.ran);
+
+          assert.equal(Log.peek().replace(msgOnlyRegex, ''), combination.ran);
+        });
+      });
+    } else {
+      describe(messageLogLevel[0] + "() configured at level " + configuredLogLevel, function() {
+        it('should not print the message since the configured level is lower', function() {
+          combination.ran = Math.random();
+
+          Log = getLogObject();
+          Log.enableQueue(combination.configuredLevel);
+
+          if (combination.messageLevel === "Fatal")  Log.F(combination.ran);
+          if (combination.messageLevel === "Error")  Log.E(combination.ran);
+          if (combination.messageLevel === "Warn")   Log.W(combination.ran);
+          if (combination.messageLevel === "Info")   Log.I(combination.ran);
+          if (combination.messageLevel === "Debug")  Log.D(combination.ran);
+          if (combination.messageLevel === "Trace")  Log.T(combination.ran);
+
+          assert.equal(Log.peek(), "");
+        });
+      });
+    }
+  });
+
+  describe('Logging objects', function() {
+    describe('Logging an error', function() {
+      it('should provide stack trace details and the log message', function() {
+        var msg = "msg1";
+        var err = new Error(msg);
+        var stackLineCount = 0;
+
+        Log = getLogObject();
+
+        Log.F(err);
+
+        errJson = Log.pop();
+
+        lines = errJson.split('\n');
+
+        assert.isAtLeast(lines.length, 9);
+
+        lines.forEach(function(line) {
+          // Try to identify if a line is a stack trace using this ugly regex:
+          if (line.match(/at.*:[0-9]+:[0-9]+[\)]?["]?$/) !== null) {
+            ++stackLineCount;
+          }
+        });
+
+        // Safe to assume that at least 5 lines that look like stack trace
+        //  output indicates that there is a stack trace
+        assert.isAtLeast(stackLineCount, 5);
+      });
+    });
+
+    describe('Log({})', function() {
+      it('should pretty print json', function() {
+        var msg = {msg: "msg1"};
+
+        Log = getLogObject();
+
+        Log.F(msg);
+
+        json = Log.pop();
+
+        lines = json.trim().split('\n');
+
+        assert.equal(lines.length, 4);
+
+        expectedLines = [];
+        expectedLines.push("{");
+        expectedLines.push("\"msg\": \"msg1\"");
+        expectedLines.push("}");
+
+        lines.slice(1).forEach(function(line) {
+          assert.equal(line.trim(), expectedLines.shift());
+        });
+      });
+    });
+
+    describe('Log([])', function() {
+      it('should pretty print json', function() {
+        var msg = ["msg1", "msg2"];
+
+        Log = getLogObject();
+
+        Log.F(msg);
+
+        json = Log.pop();
+
+        lines = json.trim().split('\n');
+
+        assert.equal(lines.length, 5);
+
+        expectedLines = [];
+        expectedLines.push("[");
+        expectedLines.push("\"" + msg[0] + "\",");
+        expectedLines.push("\"" + msg[1] + "\"");
+        expectedLines.push("]");
+
+        lines.slice(1).forEach(function(line) {
+          assert.equal(line.trim(), expectedLines.shift());
+        });
+      });
+    });
+
+    describe('Log(undefined)', function() {
+      it('should log a blank line', function() {
+        Log = getLogObject();
+
+        Log.F(undefined);
+
+        json = Log.pop();
+
+        assert.notEqual(json, "");
+        assert.equal(json.replace(msgOnlyRegex, ''), "");
+      });
+    });
+
+    describe('Log(true|false)', function() {
+      it('should log the string value true when Log(true)', function() {
+        Log = getLogObject();
+
+        Log.F(true);
+
+        json = Log.pop();
+
+        assert.notEqual(json, "");
+        assert.equal(json.replace(msgOnlyRegex, ''), "true");
+      });
+
+      it('should log the string value false when Log(false)', function() {
+        Log = getLogObject();
+
+        Log.F(false);
+
+        json = Log.pop();
+
+        assert.notEqual(json, "");
+        assert.equal(json.replace(msgOnlyRegex, ''), "false");
+      });
     });
   });
 });
