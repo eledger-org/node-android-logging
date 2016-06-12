@@ -252,7 +252,11 @@ module.exports._convertToString = function(arg) {
 
     if (c == "[object Error]") {
       // For some reason, the stacktrace is not visible, so this hack fixes that
-      arg = {"error": arg, "stack": arg.stack};
+      arg = {
+        "error": arg.stack.split('\n')[0],
+        "stack": arg.stack.split('\n').slice(1)
+          .map(function(each) { return each.trim(); })
+      };
     }
 
     return getSelf()._stringify(arg, null, 2).prepend('\n').indent(INDENT_SIZE);
