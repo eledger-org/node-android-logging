@@ -1,0 +1,25 @@
+{
+  "name": "node-android-logging",
+  "version": "1.0.0",
+  "description": "A node.js logging library intended to replicate the Android logging format",
+  "main": "index.js",
+  "directories": {
+    "example": "example",
+    "test": "test"
+  },
+  "dependencies": {},
+  "devDependencies": {},
+  "scripts": {
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/eledger-org/node-android-logging.git"
+  },
+  "author": "Henry Brown",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/eledger-org/node-android-logging/issues"
+  },
+  "homepage": "https://github.com/eledger-org/node-android-logging#readme"
+}
