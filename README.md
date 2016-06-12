@@ -8,7 +8,7 @@ A node.js logging library intended to replicate the Android logging format
 
 ### Code (See example/simple-example.js)
 
-    var Log = require('log');
+    var Log = require('../../node-android-logging');
 
     Log.D("Log message");
 
@@ -20,7 +20,7 @@ A node.js logging library intended to replicate the Android logging format
 
 ### Code (See example/error-example.js)
 
-    var Log = require('log');
+    var Log = require('../../node-android-logging');
 
     function testError() {
       try {
