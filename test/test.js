@@ -152,7 +152,7 @@ describe('Log', function() {
 
         lines.forEach(function(line) {
           // Try to identify if a line is a stack trace using this ugly regex:
-          if (line.match(/at.*:[0-9]+:[0-9]+[\)]?["]?$/) !== null) {
+          if (line.match(/["]?at.*:[0-9]+:[0-9]+[\)]?["]?[,]?$/) !== null) {
             ++stackLineCount;
           }
         });
