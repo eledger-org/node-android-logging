@@ -9,11 +9,12 @@
   },
   "dependencies": {
     "chai": "^3.5.0",
-    "circular-json": "^0.3.0"
+    "circular-json": "^0.3.0",
+    "mocha": "^2.5.3"
   },
   "devDependencies": {},
   "scripts": {
-    "test": "mocha"
+    "test": "./node_modules/mocha/bin/mocha"
   },
   "repository": {
     "type": "git",
