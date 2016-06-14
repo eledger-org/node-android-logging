@@ -1,4 +1,5 @@
 # node-android-logging
+[![Build Status](https://travis-ci.org/eledger-org/node-android-logging.svg?branch=master)](https://travis-ci.org/eledger-org/node-android-logging)
 
 ## About
 
