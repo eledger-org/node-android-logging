@@ -1,6 +1,14 @@
 language: node_js
 node_js:
-  - "6"
-  - "6.1"
-  - "5.11"
-  - "iojs"
+- '6'
+- '6.1'
+- '5.11'
+- iojs
+notifications:
+  email:
+    recipients:
+    - henry@ibespwn.com
+    on_success: change
+    on_failure: always
+  slack:
+    secure: MOHOBY1j5RvAiVc5dmRfyqqPbUanGq54I/fJwMj4trFzIKE42LFv/6Kfu/tG6y1wBex5tJ5offGfuBozGHsYuPNYIV6LDTY78ji2yGKI9Ox/QA74ow27eVmHYow1czinFLzsN8nYeQANVDgUm1pY0Kwkx5w/1DETx0XWhk0TeRX3QkBmeXbq+Zm75kXejlR3tPZ5WhgNlCgsWR1FUK9cBrYIkPcgTapG7U5SM0es3LC4yl0ETwSgpfi0spVApa9YeSKKS1xsKvUxJZwe+wqkzOitPo/bVt7ERt+iGkaSOGvU5NiT2sZvV/FfSEBWeb/BmrAfPOop6xzoZ/yqlhWrjWbPieDrq3LJ1VFz+F0ey4+iirk759+tqcgsHgHDvKvcLJJhGm2M66Hdro8SunnNKFHI3VJHzYJNN1iFMP5bzUKgLjno2clt8+ougtAqsyltjvAnKhQ7vSOagqDILcLtXkrN1avnvWSz9cL/kywDdsfGZ1bkRwq0r1wJvUnm/gbcjTOZfwWrffuaGEy1VCDXupeCXYEf0JBGpQ+R3T2n+4kt3uyfuRriGPdOK5lxwMFJSGxkn1X31B4iRu0gm7TrxtDupk7j1ZvEJUhVYm1S5i57MxhQ7dCJtHClT1+00x4L3fnYpuEAtf9uYkB49zYPcZZ+FgYFoNVtD6vhi3MGGf0=
