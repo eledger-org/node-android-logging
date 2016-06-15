@@ -14,7 +14,8 @@
   },
   "devDependencies": {},
   "scripts": {
-    "test": "./node_modules/mocha/bin/mocha"
+    "test": "./node_modules/mocha/bin/mocha",
+    "docgen": "yuidoc -o gen ."
   },
   "repository": {
     "type": "git",

@@ -1,3 +1,18 @@
+/**
+ * The main API for the logging framework.
+ *
+ * @file    index.js
+ *
+ *
+ * @see Must declare it a class so it will be properly parsed.
+ * @see https://github.com/yui/yuidoc/issues/25
+ *
+ * @class   node-android-logging
+ * @module  node-android-logging
+ *
+ * @author  Henry Brown
+ */
+
 var circularJSON  = require('circular-json');
 var printf        = require('util').format;
 
@@ -7,11 +22,22 @@ function getSelf() {
 
 module.exports.getSelf = getSelf;
 
+/**
+ * Enable stdout output (enabled by default)
+ *
+ * @method            enableStdout
+ * @param level       The log level to set for stdout output
+ */
 module.exports.enableStdout = function(level) {
   getSelf()._enableStdout = true;
   getSelf()._stdoutLevel  = getSelf()._getIntLevel(level);
 };
 
+/**
+ * Disable stdout
+ *
+ * @method            disableStdout
+ */
 module.exports.disableStdout = function() {
   getSelf()._enableStdout = false;
   if (getSelf().stdOutLevel === undefined) {
@@ -19,11 +45,25 @@ module.exports.disableStdout = function() {
   }
 };
 
+/**
+ * Enable stderr output (disabled by default)
+ *
+ * @method            enableStderr
+ * @param level       The log level to set for stderr output
+ */
 module.exports.enableStderr = function(level) {
   getSelf()._enableStderr = true;
   getSelf()._stderrLevel  = getSelf()._getIntLevel(level);
 };
 
+/**
+ * Disable stderr output
+ *
+ * @method            disableStderr
+ *
+ * @see               disableStdout
+ * @see               enableStderr
+ */
 module.exports.disableStderr = function() {
   getSelf()._enableStderr = false;
   if (getSelf().stdErrLevel === undefined) {
