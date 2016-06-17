@@ -44,7 +44,7 @@
       "comma-dangle": "warn",
       "semi": "error",
       "curly": "error",
-      "quotes": ["warn", "double"],
+      "quotes": ["error", "double"],
       "indent": ["error", 2],
       "linebreak-style": ["error", "unix"]
     }
