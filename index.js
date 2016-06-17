@@ -13,8 +13,8 @@
  * @author  Henry Brown
  */
 
-var circularJSON  = require('circular-json');
-var printf        = require('util').format;
+var circularJSON  = require("circular-json");
+var printf        = require("util").format;
 
 function getSelf() {
   return module.exports;
@@ -200,9 +200,9 @@ module.exports._log = function(logLevel, args) {
 
   let fileLineFunc  = s._getFileLineFunc();
 
-  let prefix        = printf("%s/%s(%s):", logLevel[0], fileLineFunc['fileFunc'], fileLineFunc['line']);
+  let prefix        = printf("%s/%s(%s):", logLevel[0], fileLineFunc["fileFunc"], fileLineFunc["line"]);
 
-  s._doLog(logLevel, printf("%s %s", prefix, args.join(',')));
+  s._doLog(logLevel, printf("%s %s", prefix, args.join(",")));
 };
 
 module.exports._doLog = function(logLevel, message) {
@@ -244,8 +244,8 @@ module.exports._getFileLineFunc = function() {
     for (stackIter = 1; stackIter < stack.length; ++stackIter) {
       if (firstFile !== stack[stackIter].file) {
         return {
-          fileFunc: (stack[stackIter].file + " " + stack[stackIter].func).padRight(' ', s._fileFuncPad),
-          line: stack[stackIter].line.padLeft (' ', s._linePad)
+          fileFunc: (stack[stackIter].file + " " + stack[stackIter].func).padRight(" ", s._fileFuncPad),
+          line: stack[stackIter].line.padLeft (" ", s._linePad)
         };
       }
     }
@@ -260,7 +260,7 @@ module.exports._getFileLineFunc = function() {
 };
 
 module.exports._getStackTrace = function() {
-  var trace = (new Error).stack.split('\n');
+  var trace = (new Error).stack.split("\n");
   var stack = [];
 
   let traceIter;
@@ -268,13 +268,13 @@ module.exports._getStackTrace = function() {
   for (traceIter = 1; traceIter < trace.length; ++traceIter) {
     let line = trace[traceIter];
 
-    let words = line.trim().split(' ');
-    let splt  = words[1].split('.');
+    let words = line.trim().split(" ");
+    let splt  = words[1].split(".");
 
     stack.push({
-      file: words[words.length - 1].replace(/^.*\//, '').replace(/:.*$/, '').replace(/\(/, ''),
+      file: words[words.length - 1].replace(/^.*\//, "").replace(/:.*$/, "").replace(/\(/, ""),
       func: splt[splt.length - 1],
-      line: words[words.length - 1].replace(/^[^:]*:/, '').replace(/:[^:]*/, '')
+      line: words[words.length - 1].replace(/^[^:]*:/, "").replace(/:[^:]*/, "")
     });
   }
 
@@ -282,7 +282,7 @@ module.exports._getStackTrace = function() {
 };
 
 module.exports._stringify = function(arg) {
-  return circularJSON.stringify(arg, null, 2).replace(/\\n/g, '\n');
+  return circularJSON.stringify(arg, null, 2).replace(/\\n/g, "\n");
 };
 
 module.exports._convertToString = function(arg) {
@@ -297,32 +297,32 @@ module.exports._convertToString = function(arg) {
   } else if (typeof arg === "number") {
     return "" + arg;
   } else if (Array.isArray(arg)) {
-    return getSelf()._stringify(arg, null, 2).prepend('\n').indent(INDENT_SIZE);
+    return getSelf()._stringify(arg, null, 2).prepend("\n").indent(INDENT_SIZE);
   } else if (arg != null && typeof arg === "object") {
     var c = Object.prototype.toString.call(arg);
 
     if (c == "[object Error]") {
       // For some reason, the stacktrace is not visible, so this hack fixes that
       arg = {
-        "error": arg.stack.split('\n')[0],
-        "stack": arg.stack.split('\n').slice(1)
+        "error": arg.stack.split("\n")[0],
+        "stack": arg.stack.split("\n").slice(1)
           .map(function(each) { return each.trim(); })
       };
     }
 
-    return getSelf()._stringify(arg, null, 2).prepend('\n').indent(INDENT_SIZE);
+    return getSelf()._stringify(arg, null, 2).prepend("\n").indent(INDENT_SIZE);
   } else {
     let err = new TypeError("Unsupported type: " + getSelf()._stringify({
       arg: arg,
       type: typeof arg,
       toString: Object.prototype.toString.call(arg)
-    }), null, 2).prepend('\n').indent(INDENT_SIZE);
+    }), null, 2).prepend("\n").indent(INDENT_SIZE);
 
     throw err;
   }
 };
 
-module.exports._levels = [ 'Fatal', 'Error', 'Warn', 'Info', 'Debug', 'Trace' ];
+module.exports._levels = [ "Fatal", "Error", "Warn", "Info", "Debug", "Trace" ];
 
 module.exports._getIntLevel = function(level) {
   var s = getSelf();

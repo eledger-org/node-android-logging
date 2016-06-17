@@ -1,9 +1,9 @@
 /* eslint-env mocha */
 
-var assert = require('chai').assert;
+var assert = require("chai").assert;
 
 function getLogObject() {
-  var Log = require('../index.js');
+  var Log = require("../index.js");
 
   Log.setDefaults();
   Log.disableStdout();
@@ -14,7 +14,7 @@ function getLogObject() {
   return Log;
 }
 
-var Log = require('../index.js');
+var Log = require("../index.js");
 
 var callbacks = {
   "Fatal": Log.F,
@@ -29,22 +29,22 @@ function logAtLevel(messageLevel, ran) {
   callbacks[messageLevel](ran);
 }
 
-describe('Log', function() {
+describe("Log", function() {
   var msgOnlyRegex = /^.*[ ]/;
   var logLevel = [ "Fatal", "Error", "Warn", "Info", "Debug", "Trace" ];
   var Log = getLogObject();
 
-  describe('peek()', function() {
-    it('should return a log line after a Log statement', function() {
+  describe("peek()", function() {
+    it("should return a log line after a Log statement", function() {
       var Log = getLogObject();
       var exp = "blue";
 
       Log.F(exp);
 
-      assert.equal(Log.peek().replace(msgOnlyRegex, ''), exp);
+      assert.equal(Log.peek().replace(msgOnlyRegex, ""), exp);
     });
 
-    it('should return the same most recently logged value if called more than once', function() {
+    it("should return the same most recently logged value if called more than once", function() {
       var Log = getLogObject();
       var exp = "test";
 
@@ -54,15 +54,15 @@ describe('Log', function() {
       assert.equal(Log.peek(), Log.peek());
     });
 
-    it('should return an empty string when the queue is empty', function() {
+    it("should return an empty string when the queue is empty", function() {
       var Log = getLogObject();
 
       assert.equal(Log.peek(), "");
     });
   });
 
-  describe('emptyQueue()', function() {
-    it('should cause peek to return an empty string', function() {
+  describe("emptyQueue()", function() {
+    it("should cause peek to return an empty string", function() {
       var Log = getLogObject();
       var msg1 = "msg1";
       var msg2 = "msg2";
@@ -70,7 +70,7 @@ describe('Log', function() {
       assert.equal(Log.peek(), "");
 
       Log.F(msg1);
-      assert.equal(Log.peek().replace(msgOnlyRegex, ''), msg1);
+      assert.equal(Log.peek().replace(msgOnlyRegex, ""), msg1);
 
       Log.F(msg2);
 
@@ -79,8 +79,8 @@ describe('Log', function() {
     });
   });
 
-  describe('pop()', function() {
-    it('should return and remove the first item in the queue', function() {
+  describe("pop()", function() {
+    it("should return and remove the first item in the queue", function() {
       var Log = getLogObject();
       var msg1 = "msg1";
       var msg2 = "msg2";
@@ -88,10 +88,10 @@ describe('Log', function() {
       Log.F(msg1);
       Log.F(msg2);
 
-      assert.equal(Log.peek().replace(msgOnlyRegex, ''), msg1);
+      assert.equal(Log.peek().replace(msgOnlyRegex, ""), msg1);
       assert.equal(Log.peek(), Log.pop());
 
-      assert.equal(Log.peek().replace(msgOnlyRegex, ''), msg2);
+      assert.equal(Log.peek().replace(msgOnlyRegex, ""), msg2);
       assert.equal(Log.peek(), Log.pop());
     });
   });
@@ -113,7 +113,7 @@ describe('Log', function() {
 
     if (messageLogLevelNum <= configuredLogLevelNum) {
       describe(messageLogLevel[0] + "() configured at level " + configuredLogLevel, function() {
-        it('should print the message since the configured level is equal or higher', function() {
+        it("should print the message since the configured level is equal or higher", function() {
           combination.ran = Math.random();
 
           Log = getLogObject();
@@ -121,12 +121,12 @@ describe('Log', function() {
 
           logAtLevel(combination.messageLevel, combination.ran);
 
-          assert.equal(Log.peek().replace(msgOnlyRegex, ''), combination.ran);
+          assert.equal(Log.peek().replace(msgOnlyRegex, ""), combination.ran);
         });
       });
     } else {
       describe(messageLogLevel[0] + "() configured at level " + configuredLogLevel, function() {
-        it('should not print the message since the configured level is lower', function() {
+        it("should not print the message since the configured level is lower", function() {
           combination.ran = Math.random();
 
           Log = getLogObject();
@@ -140,9 +140,9 @@ describe('Log', function() {
     }
   });
 
-  describe('Logging objects', function() {
-    describe('Logging an error', function() {
-      it('should provide stack trace details and the log message', function() {
+  describe("Logging objects", function() {
+    describe("Logging an error", function() {
+      it("should provide stack trace details and the log message", function() {
         var msg = "msg1";
         var err = new Error(msg);
         var stackLineCount = 0;
@@ -153,7 +153,7 @@ describe('Log', function() {
 
         let errJson = Log.pop();
 
-        let lines = errJson.split('\n');
+        let lines = errJson.split("\n");
 
         assert.isAtLeast(lines.length, 9);
 
@@ -170,8 +170,8 @@ describe('Log', function() {
       });
     });
 
-    describe('Log({})', function() {
-      it('should pretty print json', function() {
+    describe("Log({})", function() {
+      it("should pretty print json", function() {
         var msg = {msg: "msg1"};
 
         Log = getLogObject();
@@ -180,7 +180,7 @@ describe('Log', function() {
 
         let json = Log.pop();
 
-        let lines = json.trim().split('\n');
+        let lines = json.trim().split("\n");
 
         assert.equal(lines.length, 4);
 
@@ -195,8 +195,8 @@ describe('Log', function() {
       });
     });
 
-    describe('Log([])', function() {
-      it('should pretty print json', function() {
+    describe("Log([])", function() {
+      it("should pretty print json", function() {
         var msg = ["msg1", "msg2"];
 
         Log = getLogObject();
@@ -205,7 +205,7 @@ describe('Log', function() {
 
         let json = Log.pop();
 
-        let lines = json.trim().split('\n');
+        let lines = json.trim().split("\n");
 
         assert.equal(lines.length, 5);
 
@@ -221,8 +221,8 @@ describe('Log', function() {
       });
     });
 
-    describe('Log(undefined)', function() {
-      it('should log a blank line', function() {
+    describe("Log(undefined)", function() {
+      it("should log a blank line", function() {
         Log = getLogObject();
 
         Log.F(undefined);
@@ -230,12 +230,12 @@ describe('Log', function() {
         let json = Log.pop();
 
         assert.notEqual(json, "");
-        assert.equal(json.replace(msgOnlyRegex, ''), "");
+        assert.equal(json.replace(msgOnlyRegex, ""), "");
       });
     });
 
-    describe('Log(true|false)', function() {
-      it('should log the string value true when Log(true)', function() {
+    describe("Log(true|false)", function() {
+      it("should log the string value true when Log(true)", function() {
         Log = getLogObject();
 
         Log.F(true);
@@ -243,10 +243,10 @@ describe('Log', function() {
         let json = Log.pop();
 
         assert.notEqual(json, "");
-        assert.equal(json.replace(msgOnlyRegex, ''), "true");
+        assert.equal(json.replace(msgOnlyRegex, ""), "true");
       });
 
-      it('should log the string value false when Log(false)', function() {
+      it("should log the string value false when Log(false)", function() {
         Log = getLogObject();
 
         Log.F(false);
@@ -254,7 +254,7 @@ describe('Log', function() {
         let json = Log.pop();
 
         assert.notEqual(json, "");
-        assert.equal(json.replace(msgOnlyRegex, ''), "false");
+        assert.equal(json.replace(msgOnlyRegex, ""), "false");
       });
     });
   });

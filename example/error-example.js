@@ -1,4 +1,4 @@
-var Log = require('../../node-android-logging');
+var Log = require("../../node-android-logging");
 
 function testError() {
   try {
