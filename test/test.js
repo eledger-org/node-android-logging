@@ -1,3 +1,5 @@
+/* eslint-env mocha */
+
 var assert = require('chai').assert;
 
 function getLogObject() {
@@ -14,7 +16,7 @@ function getLogObject() {
 
 var Log = require('../index.js');
 
-callbacks = {
+var callbacks = {
   "Fatal": Log.F,
   "Error": Log.E,
   "Warn":  Log.W,
@@ -103,11 +105,11 @@ describe('Log', function() {
   });
 
   combinations.forEach(function(combination) {
-    messageLogLevel = combination.messageLevel;
-    configuredLogLevel = combination.configuredLevel;
+    let messageLogLevel = combination.messageLevel;
+    let configuredLogLevel = combination.configuredLevel;
 
-    messageLogLevelNum = Log._getIntLevel(messageLogLevel);
-    configuredLogLevelNum = Log._getIntLevel(configuredLogLevel);
+    let messageLogLevelNum = Log._getIntLevel(messageLogLevel);
+    let configuredLogLevelNum = Log._getIntLevel(configuredLogLevel);
 
     if (messageLogLevelNum <= configuredLogLevelNum) {
       describe(messageLogLevel[0] + "() configured at level " + configuredLogLevel, function() {
@@ -149,9 +151,9 @@ describe('Log', function() {
 
         Log.F(err);
 
-        errJson = Log.pop();
+        let errJson = Log.pop();
 
-        lines = errJson.split('\n');
+        let lines = errJson.split('\n');
 
         assert.isAtLeast(lines.length, 9);
 
@@ -176,13 +178,13 @@ describe('Log', function() {
 
         Log.F(msg);
 
-        json = Log.pop();
+        let json = Log.pop();
 
-        lines = json.trim().split('\n');
+        let lines = json.trim().split('\n');
 
         assert.equal(lines.length, 4);
 
-        expectedLines = [];
+        let expectedLines = [];
         expectedLines.push("{");
         expectedLines.push("\"msg\": \"msg1\"");
         expectedLines.push("}");
@@ -201,13 +203,13 @@ describe('Log', function() {
 
         Log.F(msg);
 
-        json = Log.pop();
+        let json = Log.pop();
 
-        lines = json.trim().split('\n');
+        let lines = json.trim().split('\n');
 
         assert.equal(lines.length, 5);
 
-        expectedLines = [];
+        let expectedLines = [];
         expectedLines.push("[");
         expectedLines.push("\"" + msg[0] + "\",");
         expectedLines.push("\"" + msg[1] + "\"");
@@ -225,7 +227,7 @@ describe('Log', function() {
 
         Log.F(undefined);
 
-        json = Log.pop();
+        let json = Log.pop();
 
         assert.notEqual(json, "");
         assert.equal(json.replace(msgOnlyRegex, ''), "");
@@ -238,7 +240,7 @@ describe('Log', function() {
 
         Log.F(true);
 
-        json = Log.pop();
+        let json = Log.pop();
 
         assert.notEqual(json, "");
         assert.equal(json.replace(msgOnlyRegex, ''), "true");
@@ -249,7 +251,7 @@ describe('Log', function() {
 
         Log.F(false);
 
-        json = Log.pop();
+        let json = Log.pop();
 
         assert.notEqual(json, "");
         assert.equal(json.replace(msgOnlyRegex, ''), "false");

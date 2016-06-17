@@ -18,15 +18,17 @@ var printf        = require('util').format;
 
 function getSelf() {
   return module.exports;
-};
+}
 
 module.exports.getSelf = getSelf;
 
 /**
  * Enable stdout output (enabled by default)
  *
- * @method            enableStdout
- * @param level       The log level to set for stdout output
+ * @method                    enableStdout
+ * @param {String} level      The log level to set for stdout output
+ *
+ * @returns {void}
  */
 module.exports.enableStdout = function(level) {
   getSelf()._enableStdout = true;
@@ -36,7 +38,9 @@ module.exports.enableStdout = function(level) {
 /**
  * Disable stdout
  *
- * @method            disableStdout
+ * @method                    disableStdout
+ *
+ * @returns {void}
  */
 module.exports.disableStdout = function() {
   getSelf()._enableStdout = false;
@@ -48,8 +52,10 @@ module.exports.disableStdout = function() {
 /**
  * Enable stderr output (disabled by default)
  *
- * @method            enableStderr
- * @param level       The log level to set for stderr output
+ * @method                    enableStderr
+ * @param {String} level      The log level to set for stderr output
+ *
+ * @returns {void}
  */
 module.exports.enableStderr = function(level) {
   getSelf()._enableStderr = true;
@@ -59,10 +65,12 @@ module.exports.enableStderr = function(level) {
 /**
  * Disable stderr output
  *
- * @method            disableStderr
+ * @method                    disableStderr
  *
- * @see               disableStdout
- * @see               enableStderr
+ * @returns {void}
+ *
+ * @see                       disableStdout
+ * @see                       enableStderr
  */
 module.exports.disableStderr = function() {
   getSelf()._enableStderr = false;
@@ -188,12 +196,11 @@ module.exports._log = function(logLevel, args) {
 
   s.checkDefaults();
 
-  var args      = [].slice.apply(args).map(getSelf()._convertToString);
+  args          = [].slice.apply(args).map(getSelf()._convertToString);
 
-  fileLineFunc  = s._getFileLineFunc();
+  let fileLineFunc  = s._getFileLineFunc();
 
-  prefix        = printf("%s/%s(%s):", logLevel[0],
-      fileLineFunc['fileFunc'], fileLineFunc['line']);
+  let prefix        = printf("%s/%s(%s):", logLevel[0], fileLineFunc['fileFunc'], fileLineFunc['line']);
 
   s._doLog(logLevel, printf("%s %s", prefix, args.join(',')));
 };
@@ -213,12 +220,14 @@ module.exports._doLog = function(logLevel, message) {
 
   if (s._enableStdout === true) {
     if (s._getIntLevel(logLevel) <= s._stdoutLevel) {
+      //eslint-disable-next-line no-console
       console.log(message);
     }
   }
 
   if (s._enableStderr === true) {
     if (s._getIntLevel(logLevel) <= s._stderrLevel) {
+      //eslint-disable-next-line no-console
       console.error(message);
     }
   }
@@ -230,6 +239,7 @@ module.exports._getFileLineFunc = function() {
   try {
     var stack = s._getStackTrace();
     var firstFile = stack[0].file;
+    let stackIter;
 
     for (stackIter = 1; stackIter < stack.length; ++stackIter) {
       if (firstFile !== stack[stackIter].file) {
@@ -242,6 +252,7 @@ module.exports._getFileLineFunc = function() {
 
     return stack[stackIter];
   } catch (ex) {
+    //eslint-disable-next-line no-console
     console.log(ex);
 
     throw ex;
@@ -252,13 +263,13 @@ module.exports._getStackTrace = function() {
   var trace = (new Error).stack.split('\n');
   var stack = [];
 
-  var traceIter;
+  let traceIter;
 
   for (traceIter = 1; traceIter < trace.length; ++traceIter) {
-    line = trace[traceIter];
+    let line = trace[traceIter];
 
-    words = line.trim().split(' ');
-    splt  = words[1].split('.');
+    let words = line.trim().split(' ');
+    let splt  = words[1].split('.');
 
     stack.push({
       file: words[words.length - 1].replace(/^.*\//, '').replace(/:.*$/, '').replace(/\(/, ''),
@@ -301,7 +312,7 @@ module.exports._convertToString = function(arg) {
 
     return getSelf()._stringify(arg, null, 2).prepend('\n').indent(INDENT_SIZE);
   } else {
-    err = new TypeError("Unsupported type: " + getSelf()._stringify({
+    let err = new TypeError("Unsupported type: " + getSelf()._stringify({
       arg: arg,
       type: typeof arg,
       toString: Object.prototype.toString.call(arg)
