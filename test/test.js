@@ -12,6 +12,21 @@ function getLogObject() {
   return Log;
 }
 
+var Log = require('../index.js');
+
+callbacks = {
+  "Fatal": Log.F,
+  "Error": Log.E,
+  "Warn":  Log.W,
+  "Info":  Log.I,
+  "Debug": Log.D,
+  "Trace": Log.T
+};
+
+function logAtLevel(messageLevel, ran) {
+  callbacks[messageLevel](ran);
+}
+
 describe('Log', function() {
   var msgOnlyRegex = /^.*[ ]/;
   var logLevel = [ "Fatal", "Error", "Warn", "Info", "Debug", "Trace" ];
@@ -102,12 +117,7 @@ describe('Log', function() {
           Log = getLogObject();
           Log.enableQueue(combination.configuredLevel);
 
-          if (combination.messageLevel === "Fatal")  Log.F(combination.ran);
-          if (combination.messageLevel === "Error")  Log.E(combination.ran);
-          if (combination.messageLevel === "Warn")   Log.W(combination.ran);
-          if (combination.messageLevel === "Info")   Log.I(combination.ran);
-          if (combination.messageLevel === "Debug")  Log.D(combination.ran);
-          if (combination.messageLevel === "Trace")  Log.T(combination.ran);
+          logAtLevel(combination.messageLevel, combination.ran);
 
           assert.equal(Log.peek().replace(msgOnlyRegex, ''), combination.ran);
         });
@@ -120,12 +130,7 @@ describe('Log', function() {
           Log = getLogObject();
           Log.enableQueue(combination.configuredLevel);
 
-          if (combination.messageLevel === "Fatal")  Log.F(combination.ran);
-          if (combination.messageLevel === "Error")  Log.E(combination.ran);
-          if (combination.messageLevel === "Warn")   Log.W(combination.ran);
-          if (combination.messageLevel === "Info")   Log.I(combination.ran);
-          if (combination.messageLevel === "Debug")  Log.D(combination.ran);
-          if (combination.messageLevel === "Trace")  Log.T(combination.ran);
+          logAtLevel(combination.messageLevel, combination.ran);
 
           assert.equal(Log.peek(), "");
         });
