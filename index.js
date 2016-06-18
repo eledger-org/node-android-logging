@@ -12,6 +12,7 @@
  *
  * @author  Henry Brown
  */
+"use strict";
 
 var circularJSON  = require("circular-json");
 var printf        = require("util").format;
