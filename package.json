@@ -8,12 +8,13 @@
     "test": "test"
   },
   "dependencies": {
+    "circular-json": "^0.3.0"
+  },
+  "devDependencies": {
     "chai": "^3.5.0",
-    "circular-json": "^0.3.0",
     "eslint": "^2.13.0",
     "mocha": "^2.5.3"
   },
-  "devDependencies": {},
   "scripts": {
     "test": "./bin/run_tests.sh",
     "docgen": "yuidoc -o gen ."
