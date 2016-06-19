@@ -43,7 +43,7 @@ describe("Log", function() {
 
       Log.F(exp);
 
-      assert.equal(Log.peek().replace(msgOnlyRegex, ""), exp);
+      assert.strictEqual(Log.peek().replace(msgOnlyRegex, ""), exp);
     });
 
     it("should return the same most recently logged value if called more than once", function() {
@@ -53,13 +53,13 @@ describe("Log", function() {
       Log.F("blue");
       Log.F(exp);
 
-      assert.equal(Log.peek(), Log.peek());
+      assert.strictEqual(Log.peek(), Log.peek());
     });
 
     it("should return an empty string when the queue is empty", function() {
       var Log = getLogObject();
 
-      assert.equal(Log.peek(), "");
+      assert.strictEqual(Log.peek(), "");
     });
   });
 
@@ -69,15 +69,15 @@ describe("Log", function() {
       var msg1 = "msg1";
       var msg2 = "msg2";
 
-      assert.equal(Log.peek(), "");
+      assert.strictEqual(Log.peek(), "");
 
       Log.F(msg1);
-      assert.equal(Log.peek().replace(msgOnlyRegex, ""), msg1);
+      assert.strictEqual(Log.peek().replace(msgOnlyRegex, ""), msg1);
 
       Log.F(msg2);
 
       Log.emptyQueue();
-      assert.equal(Log.peek(), "");
+      assert.strictEqual(Log.peek(), "");
     });
   });
 
@@ -90,11 +90,11 @@ describe("Log", function() {
       Log.F(msg1);
       Log.F(msg2);
 
-      assert.equal(Log.peek().replace(msgOnlyRegex, ""), msg1);
-      assert.equal(Log.peek(), Log.pop());
+      assert.strictEqual(Log.peek().replace(msgOnlyRegex, ""), msg1);
+      assert.strictEqual(Log.peek(), Log.pop());
 
-      assert.equal(Log.peek().replace(msgOnlyRegex, ""), msg2);
-      assert.equal(Log.peek(), Log.pop());
+      assert.strictEqual(Log.peek().replace(msgOnlyRegex, ""), msg2);
+      assert.strictEqual(Log.peek(), Log.pop());
     });
   });
 
@@ -114,8 +114,11 @@ describe("Log", function() {
     let configuredLogLevelNum = Log._getIntLevel(configuredLogLevel);
 
     if (messageLogLevelNum <= configuredLogLevelNum) {
-      describe(messageLogLevel[0] + "() configured at level " + configuredLogLevel, function() {
-        it("should print the message since the configured level is equal or higher", function() {
+      describe(messageLogLevel[0] + "() configured at level " +
+          configuredLogLevel, function() {
+
+        it("should print the message since the configured level " +
+           " is >= the message level", function() {
           combination.ran = Math.random();
 
           Log = getLogObject();
@@ -123,7 +126,8 @@ describe("Log", function() {
 
           logAtLevel(combination.messageLevel, combination.ran);
 
-          assert.equal(Log.peek().replace(msgOnlyRegex, ""), combination.ran);
+          assert.strictEqual(Log.peek().replace(msgOnlyRegex, ""),
+              "" + combination.ran);
         });
       });
     } else {
@@ -136,7 +140,7 @@ describe("Log", function() {
 
           logAtLevel(combination.messageLevel, combination.ran);
 
-          assert.equal(Log.peek(), "");
+          assert.strictEqual(Log.peek(), "");
         });
       });
     }
@@ -184,7 +188,7 @@ describe("Log", function() {
 
         let lines = json.trim().split("\n");
 
-        assert.equal(lines.length, 4);
+        assert.strictEqual(lines.length, 4);
 
         let expectedLines = [];
         expectedLines.push("{");
@@ -192,7 +196,7 @@ describe("Log", function() {
         expectedLines.push("}");
 
         lines.slice(1).forEach(function(line) {
-          assert.equal(line.trim(), expectedLines.shift());
+          assert.strictEqual(line.trim(), expectedLines.shift());
         });
       });
     });
@@ -209,7 +213,7 @@ describe("Log", function() {
 
         let lines = json.trim().split("\n");
 
-        assert.equal(lines.length, 5);
+        assert.strictEqual(lines.length, 5);
 
         let expectedLines = [];
         expectedLines.push("[");
@@ -218,7 +222,7 @@ describe("Log", function() {
         expectedLines.push("]");
 
         lines.slice(1).forEach(function(line) {
-          assert.equal(line.trim(), expectedLines.shift());
+          assert.strictEqual(line.trim(), expectedLines.shift());
         });
       });
     });
@@ -231,8 +235,8 @@ describe("Log", function() {
 
         let json = Log.pop();
 
-        assert.notEqual(json, "");
-        assert.equal(json.replace(msgOnlyRegex, ""), "");
+        assert.notStrictEqual(json, "");
+        assert.strictEqual(json.replace(msgOnlyRegex, ""), "");
       });
     });
 
@@ -244,8 +248,8 @@ describe("Log", function() {
 
         let json = Log.pop();
 
-        assert.notEqual(json, "");
-        assert.equal(json.replace(msgOnlyRegex, ""), "true");
+        assert.notStrictEqual(json, "");
+        assert.strictEqual(json.replace(msgOnlyRegex, ""), "true");
       });
 
       it("should log the string value false when Log(false)", function() {
@@ -255,8 +259,8 @@ describe("Log", function() {
 
         let json = Log.pop();
 
-        assert.notEqual(json, "");
-        assert.equal(json.replace(msgOnlyRegex, ""), "false");
+        assert.notStrictEqual(json, "");
+        assert.strictEqual(json.replace(msgOnlyRegex, ""), "false");
       });
     });
   });
