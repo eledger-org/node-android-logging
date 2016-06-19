@@ -16,6 +16,9 @@
 
 var circularJSON  = require("circular-json");
 var printf        = require("util").format;
+var extraFuncs    = require("node-extra-funcs");
+
+extraFuncs.string.enableAll();
 
 function getSelf() {
   return module.exports;
@@ -336,23 +339,5 @@ module.exports._getIntLevel = function(level) {
   }
 
   throw new Error("Invalid log level supplied: " + level);
-};
-
-String.prototype.padLeft = function(padValue, padLength) {
-  return String(padValue.repeat(padLength) + this)
-    .slice(-padLength * padValue.length);
-};
-
-String.prototype.padRight = function(padValue, padLength) {
-  return String(this + padValue.repeat(padLength))
-    .slice(0, padLength * padValue.length);
-};
-
-String.prototype.prepend = function(prefix) {
-  return String(prefix + this);
-};
-
-String.prototype.indent = function(indentSize) {
-  return this.replace(/[\r\n]+/g, "\n" + " ".repeat(indentSize));
 };
 

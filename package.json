@@ -8,7 +8,8 @@
     "test": "test"
   },
   "dependencies": {
-    "circular-json": "^0.3.0"
+    "circular-json": "^0.3.0",
+    "node-extra-funcs": "^1.0.1"
   },
   "devDependencies": {
     "chai": "^3.5.0",
