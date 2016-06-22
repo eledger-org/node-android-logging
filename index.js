@@ -16,9 +16,7 @@
 
 var circularJSON  = require("circular-json");
 var printf        = require("util").format;
-var extraFuncs    = require("node-extra-funcs");
-
-extraFuncs.string.enableAll();
+var _s            = require("underscore.string");
 
 function getSelf() {
   return module.exports;
@@ -248,8 +246,8 @@ module.exports._getFileLineFunc = function() {
     for (stackIter = 1; stackIter < stack.length; ++stackIter) {
       if (firstFile !== stack[stackIter].file) {
         return {
-          fileFunc: (stack[stackIter].file + " " + stack[stackIter].func).padRight(" ", s._fileFuncPad),
-          line: stack[stackIter].line.padLeft (" ", s._linePad)
+          fileFunc: _s.rpad(stack[stackIter].file + " " + stack[stackIter].func, s._fileFuncPad),
+          line: _s.lpad(stack[stackIter].line, s._linePad)
         };
       }
     }
@@ -289,6 +287,47 @@ module.exports._stringify = function(arg) {
   return circularJSON.stringify(arg, null, 2).replace(/\\n/g, "\n");
 };
 
+/**
+ * Indents the passed string by a number of spaces characters equal to the
+ *  indentSize parameter.
+ *
+ * @param {String} str        The string to indent
+ * @param {Number} indentSize The number of spaces to indent each line
+ *
+ * @returns {String}          The indented string
+ *
+ * @example
+ * //outputs:
+ * //    {
+ * //      "name": "Fred",
+ * //      "role": "Superhero",
+ * //      "mascot": "Platypus"
+ * //    }
+ * console.log(JSON.stringify({
+ *   "name": "Fred",
+ *   "role": "Superhero",
+ *   "mascot": "Platypus"
+ * }, null, 2).indent(4));
+ */
+function indent(str, indentSize) {
+  let sliceLength = 2;
+
+  if (str.startsWith("\n")) {
+    /* We have to slice a little extra if the first character in this string is
+        a newline character. */
+    sliceLength += indentSize;
+  }
+
+  /* prepend a new line in order to indent the first line as well */
+  return ("\n " + str)
+  /* replace all consecutive end of line characters with \n and indentSize
+      spaces */
+    .replace(/[\r\n]+/g, "\n" + " ".repeat(indentSize))
+  /* pulls off the first newline (which we prepended in order to indent the
+      first line.) */
+    .slice(sliceLength);
+}
+
 module.exports._convertToString = function(arg) {
   var INDENT_SIZE = 4;
 
@@ -301,7 +340,7 @@ module.exports._convertToString = function(arg) {
   } else if (typeof arg === "number") {
     return "" + arg;
   } else if (Array.isArray(arg)) {
-    return getSelf()._stringify(arg, null, 2).prepend("\n").indent(INDENT_SIZE);
+    return indent(("\n" + getSelf()._stringify(arg, null, 2)), INDENT_SIZE);
   } else if (arg != null && typeof arg === "object") {
     var c = Object.prototype.toString.call(arg);
 
@@ -314,7 +353,7 @@ module.exports._convertToString = function(arg) {
       };
     }
 
-    return getSelf()._stringify(arg, null, 2).prepend("\n").indent(INDENT_SIZE);
+    return indent(("\n" + getSelf()._stringify(arg, null, 2)), INDENT_SIZE);
   } else {
     let err = new TypeError("Unsupported type: " + getSelf()._stringify({
       arg: arg,

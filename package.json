@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "circular-json": "^0.3.0",
-    "node-extra-funcs": ">=1.0.2"
+    "underscore.string": "^3.3.4"
   },
   "devDependencies": {
     "chai": "^3.5.0",
