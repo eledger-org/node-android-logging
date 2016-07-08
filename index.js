@@ -355,11 +355,13 @@ module.exports._convertToString = function(arg) {
 
     return indent(("\n" + getSelf()._stringify(arg, null, 2)), INDENT_SIZE);
   } else {
-    let err = new TypeError("Unsupported type: " + getSelf()._stringify({
+    let message = indent("\nUnsupported type: " + getSelf()._stringify({
       arg: arg,
       type: typeof arg,
       toString: Object.prototype.toString.call(arg)
-    }), null, 2).prepend("\n").indent(INDENT_SIZE);
+    }, null, 2), INDENT_SIZE);
+
+    let err = new TypeError(message);
 
     throw err;
   }

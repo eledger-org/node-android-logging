@@ -1,6 +1,6 @@
 {
   "name": "node-android-logging",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "A node.js logging library intended to replicate the Android logging format",
   "main": "index.js",
   "directories": {
